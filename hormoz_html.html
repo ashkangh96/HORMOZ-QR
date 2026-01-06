@@ -1,0 +1,1536 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Environmental Impact Calculator - Hormuz Island</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-green: #2E8B57;
+            --secondary-green: #3CB371;
+            --light-green: #98FB98;
+            --primary-blue: #1E90FF;
+            --light-blue: #87CEFA;
+            --warning-red: #FF6B6B;
+            --dark-red: #DC143C;
+            --earth-brown: #8B4513;
+            --light-gray: #F5F5F5;
+            --dark-gray: #333;
+        }
+
+        body {
+            background-color: #f0f8ff;
+            color: var(--dark-gray);
+            line-height: 1.6;
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+
+        .app-container {
+            max-width: 100%;
+            min-height: 100vh;
+            margin: 0 auto;
+            background-color: white;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        /* Language Switcher */
+        .language-switcher {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            display: flex;
+            gap: 10px;
+        }
+
+        .lang-btn {
+            background-color: white;
+            border: 2px solid var(--primary-green);
+            border-radius: 20px;
+            padding: 8px 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .lang-btn:hover {
+            background-color: var(--primary-green);
+            color: white;
+        }
+
+        .lang-btn.active {
+            background-color: var(--primary-green);
+            color: white;
+        }
+
+        /* Content for different languages */
+        [lang="fa"] {
+            font-family: 'Vazirmatn', sans-serif;
+            direction: rtl;
+            text-align: right;
+        }
+
+        [lang="en"] {
+            font-family: 'Poppins', sans-serif;
+            direction: ltr;
+            text-align: left;
+        }
+
+        /* Pages */
+        .page {
+            display: none;
+            min-height: 100vh;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* Header */
+        .header {
+            position: relative;
+            height: 250px;
+            background: linear-gradient(135deg, var(--primary-green), var(--primary-blue));
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .header .subtitle {
+            font-size: 1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Content */
+        .content {
+            padding: 20px;
+        }
+
+        .intro-card {
+            background-color: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: -50px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            position: relative;
+            z-index: 10;
+        }
+
+        .earth-icon {
+            font-size: 4rem;
+            color: var(--primary-blue);
+            margin-bottom: 15px;
+        }
+
+        .intro-card h2 {
+            color: var(--primary-green);
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+
+        .stats-preview {
+            margin: 25px 0;
+        }
+
+        .stat {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 12px;
+            background-color: var(--light-gray);
+            border-radius: 10px;
+        }
+
+        [lang="fa"] .stat {
+            border-right: 5px solid var(--primary-green);
+        }
+
+        [lang="en"] .stat {
+            border-left: 5px solid var(--primary-green);
+        }
+
+        .stat i {
+            color: var(--primary-green);
+            font-size: 1.5rem;
+            margin: 0 15px;
+        }
+
+        .features {
+            margin-top: 40px;
+        }
+
+        .features h3 {
+            color: var(--primary-green);
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 1.4rem;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 20px;
+        }
+
+        .feature {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border-top: 4px solid var(--secondary-green);
+            transition: transform 0.3s;
+        }
+
+        .feature:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature i {
+            font-size: 2.5rem;
+            color: var(--primary-blue);
+            margin-bottom: 15px;
+        }
+
+        .feature h4 {
+            color: var(--dark-gray);
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        /* Buttons */
+        .btn-primary, .btn-secondary {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 10px auto;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-green);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #26734a;
+            transform: translateY(-3px);
+            box-shadow: 0 7px 14px rgba(46, 139, 87, 0.3);
+        }
+
+        .btn-secondary {
+            background-color: var(--light-blue);
+            color: var(--dark-gray);
+        }
+
+        .btn-secondary:hover {
+            background-color: #6cb2e0;
+        }
+
+        /* Questionnaire Page */
+        .page-header {
+            background: linear-gradient(to left, var(--primary-green), var(--primary-blue));
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        [lang="fa"] .page-header {
+            background: linear-gradient(to right, var(--primary-green), var(--primary-blue));
+        }
+
+        [lang="en"] .page-header {
+            background: linear-gradient(to left, var(--primary-green), var(--primary-blue));
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        [lang="fa"] .back-btn {
+            right: 20px;
+        }
+
+        [lang="en"] .back-btn {
+            left: 20px;
+        }
+
+        .page-header h2 {
+            margin-bottom: 10px;
+            font-size: 1.5rem;
+        }
+
+        .waste-items-container {
+            margin: 20px 0;
+        }
+
+        .waste-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background-color: var(--light-gray);
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        [lang="fa"] .waste-item {
+            border-right: 5px solid var(--warning-red);
+        }
+
+        [lang="en"] .waste-item {
+            border-left: 5px solid var(--warning-red);
+        }
+
+        .waste-item-info h4 {
+            color: var(--dark-gray);
+            margin-bottom: 5px;
+        }
+
+        .waste-item-quantity {
+            font-weight: bold;
+            color: var(--primary-green);
+        }
+
+        .delete-item {
+            background-color: var(--warning-red);
+            color: white;
+            border: none;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--dark-gray);
+            font-weight: 500;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 1rem;
+            background-color: white;
+        }
+
+        /* Results Page */
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .result-card {
+            background-color: white;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border-top: 5px solid var(--secondary-green);
+        }
+
+        .result-card.main-result {
+            border-top-color: var(--primary-blue);
+            grid-column: 1 / -1;
+        }
+
+        .result-card h3 {
+            color: var(--primary-green);
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .result-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 10px 0;
+            color: var(--dark-gray);
+        }
+
+        .main-result .result-value {
+            color: var(--warning-red);
+            font-size: 2.5rem;
+        }
+
+        .impact-visualization {
+            margin: 40px 0;
+            background-color: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .visualization-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 300px;
+            margin: 20px 0;
+        }
+
+        .waste-circle {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--warning-red) 0%, var(--dark-red) 70%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 2.5rem;
+            font-weight: bold;
+            box-shadow: 0 10px 30px rgba(255, 107, 107, 0.3);
+            transition: all 0.5s;
+        }
+
+        .visualization-legend {
+            display: flex;
+            justify-content: center;
+            margin-top: 15px;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin: 0 8px;
+        }
+
+        .legend-color.red {
+            background-color: var(--warning-red);
+        }
+
+        .legend-color.green {
+            background-color: var(--primary-green);
+        }
+
+        .visualization-description {
+            text-align: center;
+            margin-top: 15px;
+            color: var(--dark-gray);
+            font-size: 0.9rem;
+        }
+
+        .detailed-results {
+            margin: 40px 0;
+            background-color: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px;
+            background-color: var(--light-gray);
+            border-radius: 10px;
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: white;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            overflow: hidden;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background-color: var(--primary-green);
+            color: white;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .modal-footer {
+            padding: 20px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #888;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .feature-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .btn-primary, .btn-secondary {
+                max-width: 100%;
+            }
+            
+            .language-switcher {
+                top: 10px;
+                left: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .waste-circle {
+                width: 150px;
+                height: 150px;
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Language Switcher -->
+        <div class="language-switcher">
+            <button class="lang-btn active" data-lang="fa">فارسی</button>
+            <button class="lang-btn" data-lang="en">English</button>
+        </div>
+
+        <!-- Welcome Page - Persian -->
+        <div id="welcome-page" class="page active" lang="fa">
+            <div class="header">
+                <h1><i class="fas fa-leaf"></i> ماشین‌حساب تأثیر زباله گردشگران</h1>
+                <p class="subtitle">محاسبه تأثیر زباله‌های غیرقابل بازیافت بر محیط زیست جزیره هرمز</p>
+            </div>
+            
+            <div class="content">
+                <div class="intro-card">
+                    <div class="earth-icon">
+                        <i class="fas fa-globe-asia"></i>
+                    </div>
+                    <h2>جزیره هرمز را پاک نگه داریم</h2>
+                    <p>این اپلیکیشن به شما کمک می‌کند میزان زباله غیرقابل بازیافتی که در طول اقامت خود در جزیره هرمز تولید کرده‌اید را محاسبه کنید و تأثیر آن بر محیط زیست را مشاهده نمایید.</p>
+                    
+                    <div class="stats-preview">
+                        <div class="stat">
+                            <i class="fas fa-trash"></i>
+                            <span>هر گردشگر به طور متوسط ۲٫۵ کیلوگرم زباله تولید می‌کند</span>
+                        </div>
+                        <div class="stat">
+                            <i class="fas fa-hourglass-half"></i>
+                            <span>پلاستیک‌ها تا ۴۵۰ سال در طبیعت باقی می‌مانند</span>
+                        </div>
+                        <div class="stat">
+                            <i class="fas fa-map-marked-alt"></i>
+                            <span>جزیره هرمز فقط ۴۲ کیلومتر مربع مساحت دارد</span>
+                        </div>
+                    </div>
+                    
+                    <button id="start-btn" class="btn-primary">
+                        شروع محاسبه
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                </div>
+                
+                <div class="features">
+                    <h3><i class="fas fa-star"></i> امکانات اپلیکیشن</h3>
+                    <div class="feature-grid">
+                        <div class="feature">
+                            <i class="fas fa-calculator"></i>
+                            <h4>محاسبه هوشمند</h4>
+                            <p>محاسبه وزن زباله با تحلیل هوش مصنوعی</p>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-chart-line"></i>
+                            <h4>تجزیه و تحلیل</h4>
+                            <p>تحلیل تأثیر محیط زیستی زباله‌ها</p>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-hourglass-end"></i>
+                            <h4>زمان تجزیه</h4>
+                            <p>محاسبه مدت زمان تجزیه زباله در طبیعت</p>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-chart-bar"></i>
+                            <h4>گزارش تحلیلی</h4>
+                            <p>ارائه گزارش کامل از تأثیر محیط زیستی</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Welcome Page - English -->
+        <div id="welcome-page-en" class="page" lang="en">
+            <div class="header">
+                <h1><i class="fas fa-leaf"></i> Tourist Waste Impact Calculator</h1>
+                <p class="subtitle">Calculate the environmental impact of non-recyclable waste on Hormuz Island</p>
+            </div>
+            
+            <div class="content">
+                <div class="intro-card">
+                    <div class="earth-icon">
+                        <i class="fas fa-globe-asia"></i>
+                    </div>
+                    <h2>Keep Hormuz Island Clean</h2>
+                    <p>This application helps you calculate the amount of non-recyclable waste you produced during your stay on Hormuz Island and visualize its environmental impact.</p>
+                    
+                    <div class="stats-preview">
+                        <div class="stat">
+                            <i class="fas fa-trash"></i>
+                            <span>Each tourist produces an average of 2.5 kg of waste</span>
+                        </div>
+                        <div class="stat">
+                            <i class="fas fa-hourglass-half"></i>
+                            <span>Plastic takes up to 450 years to decompose</span>
+                        </div>
+                        <div class="stat">
+                            <i class="fas fa-map-marked-alt"></i>
+                            <span>Hormuz Island is only 42 km² in area</span>
+                        </div>
+                    </div>
+                    
+                    <button id="start-btn-en" class="btn-primary">
+                        Start Calculation
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+                
+                <div class="features">
+                    <h3><i class="fas fa-star"></i> Application Features</h3>
+                    <div class="feature-grid">
+                        <div class="feature">
+                            <i class="fas fa-calculator"></i>
+                            <h4>AI Calculation</h4>
+                            <p>Calculate waste weight using AI analysis</p>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-chart-line"></i>
+                            <h4>Impact Analysis</h4>
+                            <p>Analyze environmental impact of waste</p>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-hourglass-end"></i>
+                            <h4>Decomposition Time</h4>
+                            <p>Calculate waste decomposition time in nature</p>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-chart-bar"></i>
+                            <h4>Analytical Report</h4>
+                            <p>Provide complete environmental impact report</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Questionnaire Page - Persian -->
+        <div id="questionnaire-page" class="page" lang="fa">
+            <div class="page-header">
+                <button class="back-btn" id="back-to-welcome">
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+                <h2><i class="fas fa-clipboard-list"></i> پرسشنامه زباله تولیدی</h2>
+                <p>لطفاً تعداد اقلام مصرفی خود در طول اقامت در جزیره هرمز را وارد کنید:</p>
+            </div>
+            
+            <div class="content">
+                <div class="waste-items-container">
+                    <div class="empty-state">
+                        <i class="fas fa-trash" style="font-size: 3rem; color: #ccc; margin-bottom: 15px;"></i>
+                        <p>هنوز هیچ قلم زباله‌ای اضافه نکرده‌اید.</p>
+                        <p>برای شروع، روی دکمه "افزودن قلم دیگر" کلیک کنید.</p>
+                    </div>
+                </div>
+                
+                <button id="add-item-btn" class="btn-secondary">
+                    <i class="fas fa-plus"></i> افزودن قلم دیگر
+                </button>
+                
+                <div class="form-group">
+                    <label for="stay-duration"><i class="fas fa-calendar-day"></i> مدت اقامت در جزیره (روز)</label>
+                    <input type="number" id="stay-duration" min="1" max="30" value="3">
+                </div>
+                
+                <button id="calculate-btn" class="btn-primary">
+                    محاسبه تأثیر محیط زیستی
+                    <i class="fas fa-calculator"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Questionnaire Page - English -->
+        <div id="questionnaire-page-en" class="page" lang="en">
+            <div class="page-header">
+                <button class="back-btn" id="back-to-welcome-en">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <h2><i class="fas fa-clipboard-list"></i> Waste Production Questionnaire</h2>
+                <p>Please enter the number of items you consumed during your stay on Hormuz Island:</p>
+            </div>
+            
+            <div class="content">
+                <div class="waste-items-container">
+                    <div class="empty-state">
+                        <i class="fas fa-trash" style="font-size: 3rem; color: #ccc; margin-bottom: 15px;"></i>
+                        <p>No waste items added yet.</p>
+                        <p>Click "Add New Item" to get started.</p>
+                    </div>
+                </div>
+                
+                <button id="add-item-btn-en" class="btn-secondary">
+                    <i class="fas fa-plus"></i> Add New Item
+                </button>
+                
+                <div class="form-group">
+                    <label for="stay-duration-en"><i class="fas fa-calendar-day"></i> Stay Duration on Island (Days)</label>
+                    <input type="number" id="stay-duration-en" min="1" max="30" value="3">
+                </div>
+                
+                <button id="calculate-btn-en" class="btn-primary">
+                    Calculate Environmental Impact
+                    <i class="fas fa-calculator"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Results Page - Persian -->
+        <div id="results-page" class="page" lang="fa">
+            <div class="page-header">
+                <button class="back-btn" id="back-to-questionnaire">
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+                <h2><i class="fas fa-chart-pie"></i> گزارش تأثیر محیط زیستی</h2>
+                <p>نتایج محاسبات بر اساس داده‌های وارد شده شما</p>
+            </div>
+            
+            <div class="content">
+                <div class="results-grid">
+                    <div class="result-card main-result">
+                        <h3><i class="fas fa-weight-hanging"></i> کل وزن زباله تولیدی</h3>
+                        <div class="result-value" id="total-waste">0 کیلوگرم</div>
+                        <p>برآورد شده توسط هوش مصنوعی</p>
+                    </div>
+                    
+                    <div class="result-card">
+                        <h3><i class="fas fa-hourglass-end"></i> زمان تجزیه کامل</h3>
+                        <div class="result-value" id="decomposition-time">0 سال</div>
+                        <p>طولانی‌ترین زمان تجزیه در بین اقلام</p>
+                    </div>
+                    
+                    <div class="result-card">
+                        <h3><i class="fas fa-users"></i> تأثیر جهانی</h3>
+                        <div class="result-value" id="global-impact">0 تن</div>
+                        <p>اگر همه گردشگران جهان مثل شما زباله تولید کنند</p>
+                    </div>
+                    
+                    <div class="result-card">
+                        <h3><i class="fas fa-calendar-times"></i> پوشش جزیره</h3>
+                        <div class="result-value" id="island-coverage">0 سال</div>
+                        <p>مدت زمان تا پوشیده شدن کامل جزیره با زباله</p>
+                    </div>
+                </div>
+                
+                <div class="impact-visualization">
+                    <h3><i class="fas fa-chart-line"></i> نمایش گرافیکی تأثیر زباله</h3>
+                    <div class="visualization-container">
+                        <div class="waste-circle" id="waste-circle">
+                            0 کیلوگرم
+                        </div>
+                    </div>
+                    <div class="visualization-legend">
+                        <div class="legend-item">
+                            <div class="legend-color red"></div>
+                            <span>میزان زباله تولیدی شما</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color green"></div>
+                            <span>حد مجاز پیشنهادی (۰٫۵ کیلوگرم)</span>
+                        </div>
+                    </div>
+                    <p class="visualization-description" id="visualization-description">دایره قرمز نشان‌دهنده مقدار زباله تولیدی شماست. اندازه دایره متناسب با مقدار زباله است.</p>
+                </div>
+                
+                <div class="detailed-results">
+                    <h3><i class="fas fa-file-alt"></i> جزئیات نتایج</h3>
+                    <div class="details-grid" id="detailed-results">
+                        <!-- جزئیات در اینجا نمایش داده می‌شود -->
+                    </div>
+                </div>
+                
+                <div class="action-buttons">
+                    <button id="share-btn" class="btn-primary">
+                        <i class="fas fa-share-alt"></i> اشتراک‌گذاری گزارش
+                    </button>
+                    <button id="restart-btn" class="btn-secondary">
+                        <i class="fas fa-redo"></i> محاسبه مجدد
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Page - English -->
+        <div id="results-page-en" class="page" lang="en">
+            <div class="page-header">
+                <button class="back-btn" id="back-to-questionnaire-en">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <h2><i class="fas fa-chart-pie"></i> Environmental Impact Report</h2>
+                <p>Results based on your input data</p>
+            </div>
+            
+            <div class="content">
+                <div class="results-grid">
+                    <div class="result-card main-result">
+                        <h3><i class="fas fa-weight-hanging"></i> Total Waste Produced</h3>
+                        <div class="result-value" id="total-waste-en">0 kg</div>
+                        <p>Estimated by AI analysis</p>
+                    </div>
+                    
+                    <div class="result-card">
+                        <h3><i class="fas fa-hourglass-end"></i> Full Decomposition Time</h3>
+                        <div class="result-value" id="decomposition-time-en">0 years</div>
+                        <p>Longest decomposition time among items</p>
+                    </div>
+                    
+                    <div class="result-card">
+                        <h3><i class="fas fa-users"></i> Global Impact</h3>
+                        <div class="result-value" id="global-impact-en">0 tons</div>
+                        <p>If all global tourists produced the same waste</p>
+                    </div>
+                    
+                    <div class="result-card">
+                        <h3><i class="fas fa-calendar-times"></i> Island Coverage</h3>
+                        <div class="result-value" id="island-coverage-en">0 years</div>
+                        <p>Time to completely cover the island with waste</p>
+                    </div>
+                </div>
+                
+                <div class="impact-visualization">
+                    <h3><i class="fas fa-chart-line"></i> Waste Impact Visualization</h3>
+                    <div class="visualization-container">
+                        <div class="waste-circle" id="waste-circle-en">
+                            0 kg
+                        </div>
+                    </div>
+                    <div class="visualization-legend">
+                        <div class="legend-item">
+                            <div class="legend-color red"></div>
+                            <span>Your waste production</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color green"></div>
+                            <span>Recommended limit (0.5 kg)</span>
+                        </div>
+                    </div>
+                    <p class="visualization-description" id="visualization-description-en">The red circle represents your waste amount. Circle size is proportional to waste quantity.</p>
+                </div>
+                
+                <div class="detailed-results">
+                    <h3><i class="fas fa-file-alt"></i> Detailed Results</h3>
+                    <div class="details-grid" id="detailed-results-en">
+                        <!-- Details will be shown here -->
+                    </div>
+                </div>
+                
+                <div class="action-buttons">
+                    <button id="share-btn-en" class="btn-primary">
+                        <i class="fas fa-share-alt"></i> Share Report
+                    </button>
+                    <button id="restart-btn-en" class="btn-secondary">
+                        <i class="fas fa-redo"></i> Calculate Again
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal for adding items - Persian -->
+        <div id="add-item-modal" class="modal" lang="fa">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3><i class="fas fa-trash"></i> افزودن قلم زباله جدید</h3>
+                    <button class="close-modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="item-type">نوع زباله</label>
+                        <select id="item-type">
+                            <option value="plastic_bottle">بطری پلاستیکی</option>
+                            <option value="snack_package">بسته‌بندی تنقلات</option>
+                            <option value="disposable_container">ظرف یکبار مصرف</option>
+                            <option value="soda_can">قوطی نوشابه</option>
+                            <option value="plastic_straw">نی پلاستیکی</option>
+                            <option value="foam_container">ظرف فوم</option>
+                            <option value="plastic_bag">نایلون پلاستیکی</option>
+                            <option value="other">سایر</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="item-quantity">تعداد</label>
+                        <input type="number" id="item-quantity" min="1" max="100" value="1">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="cancel-item-btn" class="btn-secondary">لغو</button>
+                    <button id="save-item-btn" class="btn-primary">ذخیره</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal for adding items - English -->
+        <div id="add-item-modal-en" class="modal" lang="en">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3><i class="fas fa-trash"></i> Add New Waste Item</h3>
+                    <button class="close-modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="item-type-en">Waste Type</label>
+                        <select id="item-type-en">
+                            <option value="plastic_bottle">Plastic Bottle</option>
+                            <option value="snack_package">Snack Package</option>
+                            <option value="disposable_container">Disposable Container</option>
+                            <option value="soda_can">Soda Can</option>
+                            <option value="plastic_straw">Plastic Straw</option>
+                            <option value="foam_container">Foam Container</option>
+                            <option value="plastic_bag">Plastic Bag</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="item-quantity-en">Quantity</label>
+                        <input type="number" id="item-quantity-en" min="1" max="100" value="1">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="cancel-item-btn-en" class="btn-secondary">Cancel</button>
+                    <button id="save-item-btn-en" class="btn-primary">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data for waste items in both languages
+        const wasteData = {
+            plastic_bottle: {
+                name_fa: "بطری پلاستیکی",
+                name_en: "Plastic Bottle",
+                weight: 0.025, // kg
+                decomposition: 450, // years
+                color: "#1E90FF"
+            },
+            snack_package: {
+                name_fa: "بسته‌بندی تنقلات",
+                name_en: "Snack Package",
+                weight: 0.015,
+                decomposition: 150,
+                color: "#FF8C00"
+            },
+            disposable_container: {
+                name_fa: "ظرف یکبار مصرف",
+                name_en: "Disposable Container",
+                weight: 0.035,
+                decomposition: 450,
+                color: "#DC143C"
+            },
+            soda_can: {
+                name_fa: "قوطی نوشابه",
+                name_en: "Soda Can",
+                weight: 0.020,
+                decomposition: 200,
+                color: "#C0C0C0"
+            },
+            plastic_straw: {
+                name_fa: "نی پلاستیکی",
+                name_en: "Plastic Straw",
+                weight: 0.002,
+                decomposition: 200,
+                color: "#32CD32"
+            },
+            foam_container: {
+                name_fa: "ظرف فوم",
+                name_en: "Foam Container",
+                weight: 0.010,
+                decomposition: 500,
+                color: "#F0E68C"
+            },
+            plastic_bag: {
+                name_fa: "نایلون پلاستیکی",
+                name_en: "Plastic Bag",
+                weight: 0.005,
+                decomposition: 300,
+                color: "#DDA0DD"
+            },
+            other: {
+                name_fa: "سایر زباله‌ها",
+                name_en: "Other Waste",
+                weight: 0.030,
+                decomposition: 100,
+                color: "#A9A9A9"
+            }
+        };
+
+        // App variables
+        let wasteItems = [];
+        let currentLang = 'fa';
+        let currentPage = 'welcome';
+
+        // DOM Elements
+        const langButtons = document.querySelectorAll('.lang-btn');
+        const pages = {
+            fa: {
+                welcome: document.getElementById('welcome-page'),
+                questionnaire: document.getElementById('questionnaire-page'),
+                results: document.getElementById('results-page')
+            },
+            en: {
+                welcome: document.getElementById('welcome-page-en'),
+                questionnaire: document.getElementById('questionnaire-page-en'),
+                results: document.getElementById('results-page-en')
+            }
+        };
+
+        // Language switching
+        function switchLanguage(lang) {
+            currentLang = lang;
+            
+            // Update active language button
+            langButtons.forEach(btn => {
+                if (btn.dataset.lang === lang) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+            
+            // Hide all pages
+            Object.values(pages.fa).forEach(page => page.classList.remove('active'));
+            Object.values(pages.en).forEach(page => page.classList.remove('active'));
+            
+            // Show current page in selected language
+            if (pages[lang][currentPage]) {
+                pages[lang][currentPage].classList.add('active');
+            }
+            
+            // Render waste items in current language
+            renderWasteItems();
+            
+            // Update results if on results page
+            if (currentPage === 'results') {
+                updateResultsDisplay();
+            }
+        }
+
+        // Page navigation
+        function showPage(pageName) {
+            currentPage = pageName;
+            
+            // Hide all pages in current language
+            Object.values(pages[currentLang]).forEach(page => page.classList.remove('active'));
+            
+            // Show requested page in current language
+            if (pages[currentLang][pageName]) {
+                pages[currentLang][pageName].classList.add('active');
+            }
+            
+            // If going to questionnaire, render waste items
+            if (pageName === 'questionnaire') {
+                renderWasteItems();
+            }
+        }
+
+        // Render waste items
+        function renderWasteItems() {
+            const container = currentLang === 'fa' 
+                ? document.querySelector('#questionnaire-page .waste-items-container')
+                : document.querySelector('#questionnaire-page-en .waste-items-container');
+            
+            if (!container) return;
+            
+            container.innerHTML = '';
+            
+            if (wasteItems.length === 0) {
+                container.innerHTML = currentLang === 'fa' 
+                    ? `<div class="empty-state">
+                            <i class="fas fa-trash" style="font-size: 3rem; color: #ccc; margin-bottom: 15px;"></i>
+                            <p>هنوز هیچ قلم زباله‌ای اضافه نکرده‌اید.</p>
+                            <p>برای شروع، روی دکمه "افزودن قلم دیگر" کلیک کنید.</p>
+                        </div>`
+                    : `<div class="empty-state">
+                            <i class="fas fa-trash" style="font-size: 3rem; color: #ccc; margin-bottom: 15px;"></i>
+                            <p>No waste items added yet.</p>
+                            <p>Click "Add New Item" to get started.</p>
+                        </div>`;
+                return;
+            }
+            
+            wasteItems.forEach(item => {
+                const wasteInfo = wasteData[item.type];
+                const itemName = currentLang === 'fa' ? wasteInfo.name_fa : wasteInfo.name_en;
+                const itemElement = document.createElement('div');
+                itemElement.className = 'waste-item';
+                itemElement.innerHTML = `
+                    <div class="waste-item-info">
+                        <h4>${itemName}</h4>
+                        <p>${currentLang === 'fa' ? 'وزن تقریبی: ' : 'Estimated weight: '}${(wasteInfo.weight * item.quantity).toFixed(3)} ${currentLang === 'fa' ? 'کیلوگرم' : 'kg'}</p>
+                    </div>
+                    <div class="waste-item-actions">
+                        <span class="waste-item-quantity">${item.quantity} ${currentLang === 'fa' ? 'عدد' : 'items'}</span>
+                        <button class="delete-item" data-id="${item.id}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+                
+                container.appendChild(itemElement);
+                
+                // Add delete event
+                itemElement.querySelector('.delete-item').addEventListener('click', () => {
+                    deleteWasteItem(item.id);
+                });
+            });
+        }
+
+        // Delete waste item
+        function deleteWasteItem(id) {
+            wasteItems = wasteItems.filter(item => item.id !== id);
+            renderWasteItems();
+        }
+
+        // Calculate impact
+        function calculateImpact() {
+            if (wasteItems.length === 0) {
+                alert(currentLang === 'fa' 
+                    ? 'لطفاً حداقل یک قلم زباله اضافه کنید.'
+                    : 'Please add at least one waste item.');
+                return;
+            }
+            
+            const stayDuration = currentLang === 'fa'
+                ? parseInt(document.getElementById('stay-duration').value) || 1
+                : parseInt(document.getElementById('stay-duration-en').value) || 1;
+            
+            // Calculate total weight and decomposition time
+            let totalWeight = 0;
+            let maxDecompositionTime = 0;
+            
+            wasteItems.forEach(item => {
+                const wasteInfo = wasteData[item.type];
+                totalWeight += wasteInfo.weight * item.quantity;
+                
+                if (wasteInfo.decomposition > maxDecompositionTime) {
+                    maxDecompositionTime = wasteInfo.decomposition;
+                }
+            });
+            
+            // Calculate global impact
+            const globalTourists = 1.4; // billion
+            const globalImpact = (totalWeight * globalTourists * 1000).toFixed(0);
+            
+            // Calculate island coverage time
+            const wasteVolume = totalWeight * 0.001; // m³
+            const islandArea = 42000000; // m²
+            const yearsToCover = Math.ceil(islandArea / (wasteVolume * 1000000));
+            
+            // Store results
+            window.calculationResults = {
+                totalWeight,
+                maxDecompositionTime,
+                globalImpact,
+                yearsToCover,
+                stayDuration
+            };
+            
+            // Update display
+            updateResultsDisplay();
+            
+            // Show results page
+            showPage('results');
+        }
+
+        // Update results display
+        function updateResultsDisplay() {
+            if (!window.calculationResults) return;
+            
+            const { totalWeight, maxDecompositionTime, globalImpact, yearsToCover, stayDuration } = window.calculationResults;
+            
+            // Update results in current language
+            if (currentLang === 'fa') {
+                document.getElementById('total-waste').textContent = `${totalWeight.toFixed(2)} کیلوگرم`;
+                document.getElementById('decomposition-time').textContent = `${maxDecompositionTime} سال`;
+                document.getElementById('global-impact').textContent = `${globalImpact} میلیون تن در سال`;
+                document.getElementById('island-coverage').textContent = `${yearsToCover} سال`;
+                
+                // Update visualization circle
+                const wasteCircle = document.getElementById('waste-circle');
+                wasteCircle.textContent = `${totalWeight.toFixed(2)} کیلوگرم`;
+                updateCircleSize(totalWeight);
+                
+                // Update description
+                document.getElementById('visualization-description').textContent = 
+                    `دایره قرمز نشان‌دهنده ${totalWeight.toFixed(2)} کیلوگرم زباله تولیدی شماست. اندازه دایره متناسب با مقدار زباله است.`;
+                
+                // Update detailed results
+                updateDetailedResultsFA(totalWeight, maxDecompositionTime, globalImpact, yearsToCover, stayDuration);
+            } else {
+                document.getElementById('total-waste-en').textContent = `${totalWeight.toFixed(2)} kg`;
+                document.getElementById('decomposition-time-en').textContent = `${maxDecompositionTime} years`;
+                document.getElementById('global-impact-en').textContent = `${globalImpact} million tons per year`;
+                document.getElementById('island-coverage-en').textContent = `${yearsToCover} years`;
+                
+                // Update visualization circle
+                const wasteCircle = document.getElementById('waste-circle-en');
+                wasteCircle.textContent = `${totalWeight.toFixed(2)} kg`;
+                updateCircleSize(totalWeight);
+                
+                // Update description
+                document.getElementById('visualization-description-en').textContent = 
+                    `The red circle represents ${totalWeight.toFixed(2)} kg of waste you produced. Circle size is proportional to waste quantity.`;
+                
+                // Update detailed results
+                updateDetailedResultsEN(totalWeight, maxDecompositionTime, globalImpact, yearsToCover, stayDuration);
+            }
+        }
+
+        // Update circle size based on weight
+        function updateCircleSize(weight) {
+            const maxSize = 200;
+            const minSize = 100;
+            const maxWeight = 5;
+            
+            let circleSize = minSize;
+            if (weight > 0) {
+                circleSize = minSize + (weight / maxWeight) * (maxSize - minSize);
+                if (circleSize > maxSize) circleSize = maxSize;
+            }
+            
+            const circles = document.querySelectorAll('.waste-circle');
+            circles.forEach(circle => {
+                circle.style.width = `${circleSize}px`;
+                circle.style.height = `${circleSize}px`;
+            });
+        }
+
+        // Update detailed results in Persian
+        function updateDetailedResultsFA(totalWeight, decompositionTime, globalImpact, yearsToCover, stayDuration) {
+            const container = document.getElementById('detailed-results');
+            container.innerHTML = '';
+            
+            const details = [
+                { label: "تعداد اقلام زباله", value: wasteItems.reduce((sum, item) => sum + item.quantity, 0) + " عدد" },
+                { label: "متوسط زباله روزانه", value: (totalWeight / stayDuration).toFixed(2) + " کیلوگرم" },
+                { label: "تأثیر بر خاک جزیره", value: decompositionTime > 300 ? "بسیار شدید" : decompositionTime > 100 ? "شدید" : "متوسط" },
+                { label: "تأثیر بر حیات دریایی", value: totalWeight > 0.5 ? "زیان‌بار" : totalWeight > 0.2 ? "مخرب" : "کم‌اثر" },
+                { label: "تعداد گردشگران مشابه برای پر کردن جزیره", value: Math.floor(42000000 / (totalWeight * 0.001)).toLocaleString() + " نفر" },
+                { label: "توصیه محیط زیستی", value: "کاهش مصرف محصولات بسته‌بندی و استفاده از جایگزین‌های قابل بازیافت" }
+            ];
+            
+            details.forEach(detail => {
+                const detailElement = document.createElement('div');
+                detailElement.className = 'detail-item';
+                detailElement.innerHTML = `
+                    <span>${detail.label}</span>
+                    <strong>${detail.value}</strong>
+                `;
+                container.appendChild(detailElement);
+            });
+        }
+
+        // Update detailed results in English
+        function updateDetailedResultsEN(totalWeight, decompositionTime, globalImpact, yearsToCover, stayDuration) {
+            const container = document.getElementById('detailed-results-en');
+            container.innerHTML = '';
+            
+            const details = [
+                { label: "Number of Waste Items", value: wasteItems.reduce((sum, item) => sum + item.quantity, 0) + " items" },
+                { label: "Average Daily Waste", value: (totalWeight / stayDuration).toFixed(2) + " kg" },
+                { label: "Impact on Island Soil", value: decompositionTime > 300 ? "Very Severe" : decompositionTime > 100 ? "Severe" : "Moderate" },
+                { label: "Impact on Marine Life", value: totalWeight > 0.5 ? "Harmful" : totalWeight > 0.2 ? "Damaging" : "Low Impact" },
+                { label: "Tourists Needed to Fill Island", value: Math.floor(42000000 / (totalWeight * 0.001)).toLocaleString() + " tourists" },
+                { label: "Environmental Recommendation", value: "Reduce packaged product consumption and use recyclable alternatives" }
+            ];
+            
+            details.forEach(detail => {
+                const detailElement = document.createElement('div');
+                detailElement.className = 'detail-item';
+                detailElement.innerHTML = `
+                    <span>${detail.label}</span>
+                    <strong>${detail.value}</strong>
+                `;
+                container.appendChild(detailElement);
+            });
+        }
+
+        // Share report
+        function shareReport() {
+            if (!window.calculationResults) return;
+            
+            const { totalWeight, maxDecompositionTime } = window.calculationResults;
+            
+            if (currentLang === 'fa') {
+                const reportText = `گزارش تأثیر زباله من بر جزیره هرمز:
+                • کل زباله تولیدی: ${totalWeight.toFixed(2)} کیلوگرم
+                • زمان تجزیه کامل: ${maxDecompositionTime} سال
+                • برای محاسبه تأثیر زباله خود، از اپلیکیشن ماشین‌حساب تأثیر زباله گردشگران استفاده کنید.`;
+                
+                if (navigator.share) {
+                    navigator.share({
+                        title: 'گزارش تأثیر زباله بر جزیره هرمز',
+                        text: reportText,
+                        url: window.location.href
+                    });
+                } else {
+                    alert(reportText + "\n\nمی‌توانید این متن را کپی کرده و به اشتراک بگذارید.");
+                }
+            } else {
+                const reportText = `My Waste Impact Report for Hormuz Island:
+                • Total waste produced: ${totalWeight.toFixed(2)} kg
+                • Full decomposition time: ${maxDecompositionTime} years
+                • Calculate your waste impact using the Tourist Waste Impact Calculator.`;
+                
+                if (navigator.share) {
+                    navigator.share({
+                        title: 'Waste Impact Report - Hormuz Island',
+                        text: reportText,
+                        url: window.location.href
+                    });
+                } else {
+                    alert(reportText + "\n\nYou can copy this text to share.");
+                }
+            }
+        }
+
+        // Initialize app
+        function initApp() {
+            // Language switching
+            langButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    switchLanguage(btn.dataset.lang);
+                });
+            });
+
+            // Page navigation events
+            document.getElementById('start-btn')?.addEventListener('click', () => showPage('questionnaire'));
+            document.getElementById('start-btn-en')?.addEventListener('click', () => showPage('questionnaire'));
+            
+            document.getElementById('back-to-welcome')?.addEventListener('click', () => showPage('welcome'));
+            document.getElementById('back-to-welcome-en')?.addEventListener('click', () => showPage('welcome'));
+            
+            document.getElementById('back-to-questionnaire')?.addEventListener('click', () => showPage('questionnaire'));
+            document.getElementById('back-to-questionnaire-en')?.addEventListener('click', () => showPage('questionnaire'));
+            
+            document.getElementById('calculate-btn')?.addEventListener('click', calculateImpact);
+            document.getElementById('calculate-btn-en')?.addEventListener('click', calculateImpact);
+            
+            document.getElementById('share-btn')?.addEventListener('click', shareReport);
+            document.getElementById('share-btn-en')?.addEventListener('click', shareReport);
+            
+            document.getElementById('restart-btn')?.addEventListener('click', () => {
+                wasteItems = [];
+                showPage('questionnaire');
+            });
+            
+            document.getElementById('restart-btn-en')?.addEventListener('click', () => {
+                wasteItems = [];
+                showPage('questionnaire');
+            });
+
+            // Modal events for Persian
+            document.getElementById('add-item-btn')?.addEventListener('click', () => {
+                document.getElementById('add-item-modal').classList.add('active');
+            });
+            
+            document.getElementById('cancel-item-btn')?.addEventListener('click', () => {
+                document.getElementById('add-item-modal').classList.remove('active');
+            });
+            
+            document.getElementById('save-item-btn')?.addEventListener('click', () => {
+                const itemType = document.getElementById('item-type').value;
+                const quantity = parseInt(document.getElementById('item-quantity').value);
+                
+                if (quantity > 0) {
+                    wasteItems.push({
+                        type: itemType,
+                        quantity: quantity,
+                        id: Date.now() + Math.random()
+                    });
+                    
+                    renderWasteItems();
+                    document.getElementById('add-item-modal').classList.remove('active');
+                    document.getElementById('item-quantity').value = 1;
+                }
+            });
+
+            // Modal events for English
+            document.getElementById('add-item-btn-en')?.addEventListener('click', () => {
+                document.getElementById('add-item-modal-en').classList.add('active');
+            });
+            
+            document.getElementById('cancel-item-btn-en')?.addEventListener('click', () => {
+                document.getElementById('add-item-modal-en').classList.remove('active');
+            });
+            
+            document.getElementById('save-item-btn-en')?.addEventListener('click', () => {
+                const itemType = document.getElementById('item-type-en').value;
+                const quantity = parseInt(document.getElementById('item-quantity-en').value);
+                
+                if (quantity > 0) {
+                    wasteItems.push({
+                        type: itemType,
+                        quantity: quantity,
+                        id: Date.now() + Math.random()
+                    });
+                    
+                    renderWasteItems();
+                    document.getElementById('add-item-modal-en').classList.remove('active');
+                    document.getElementById('item-quantity-en').value = 1;
+                }
+            });
+
+            // Close modal events
+            document.querySelectorAll('.close-modal').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.getElementById('add-item-modal').classList.remove('active');
+                    document.getElementById('add-item-modal-en').classList.remove('active');
+                });
+            });
+
+            // Add some sample data
+            wasteItems = [
+                { type: 'plastic_bottle', quantity: 3, id: 1 },
+                { type: 'snack_package', quantity: 5, id: 2 },
+                { type: 'plastic_straw', quantity: 2, id: 3 }
+            ];
+        }
+
+        // Run app when page loads
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>
